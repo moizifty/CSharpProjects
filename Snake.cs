@@ -5,6 +5,10 @@ namespace SnakeGame
 {
     class Snake : IDrawable
     {
+        private Point? _nextPriorityDirection = null;
+        //next iteration(relative to current) of UpdateDrawable to set direction to nextprioritydirection
+        private int _callNextPriorityDirectionAt = 0;
+        private int _currIterationSincePriorityDirection = 0;
         private Point _previousDirection = new Point(0, 0);
         private Point _direction = new Point(1, 0);
         private List<Point> tailPoints;
@@ -40,7 +44,7 @@ namespace SnakeGame
             {
                 ConsoleKeyInfo key = Console.ReadKey(true);
                 _previousDirection = _direction;
-                _direction = key.Key switch 
+                _direction =  key.Key switch 
                 {
                     ConsoleKey.W => new Point(0, -1),
                     ConsoleKey.A => new Point(-1, 0),
@@ -48,15 +52,34 @@ namespace SnakeGame
                     ConsoleKey.D => new Point(1, 0),
                     _ => _direction,
                 };
-                if((_previousDirection.Y == -_direction.Y) || (_previousDirection.X == -_direction.X))
-                    _direction = _previousDirection;
-
+                if((_previousDirection.Y == -_direction.Y) && _previousDirection.Y != 0)
+                {
+                    _nextPriorityDirection = _direction;
+                    _callNextPriorityDirectionAt = 1;
+                    _direction = new Point(1, 0);
+                }
+                if((_previousDirection.X == -_direction.X) && _previousDirection.X != 0)
+                {
+                    _nextPriorityDirection = _direction;
+                    _callNextPriorityDirectionAt = 1;
+                    _direction = new Point(0, 1);
+                }
                 while(Console.KeyAvailable)
                 { 
                     Console.ReadKey(true);
                 }
                 DrawChar(Position, CalculateCornerChar());
             }
+            if(_nextPriorityDirection.HasValue && 
+                (_callNextPriorityDirectionAt == _currIterationSincePriorityDirection))
+            {
+                _direction = _nextPriorityDirection.GetValueOrDefault();
+                _nextPriorityDirection = null;
+                _callNextPriorityDirectionAt = -1;
+                _currIterationSincePriorityDirection = 0;
+                DrawChar(Position, CalculateCornerChar());
+            }
+
             Position += _direction;
             int levelWidth = LevelManager.LevelBounds.TopLeft.X + LevelManager.LevelBounds.Width;
             int levelHeight = LevelManager.LevelBounds.TopLeft.Y + LevelManager.LevelBounds.Height;
@@ -72,6 +95,10 @@ namespace SnakeGame
                 Position = new Point(Position.X, levelHeight - 2);
 
             DrawChar(Position, CalculateNormalChar());
+            if(_nextPriorityDirection.HasValue)
+            {   
+                _currIterationSincePriorityDirection++;
+            }
         }
         private void DrawChar(Point pos, char ch)
         {
