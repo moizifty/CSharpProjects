@@ -5,7 +5,6 @@ namespace SnakeGame
 {
     class Snake : IDrawable
     {
-        private static bool _firstDrawCall;
         private Point _previousDirection = new Point(0, 0);
         private Point _direction = new Point(1, 0);
         private List<Point> tailPoints;
@@ -30,7 +29,7 @@ namespace SnakeGame
             if(foodCollided)
             {
                 Length++;
-                foodCollidedWith.Consume();
+                foodCollidedWith?.Consume();
             }
             ClearTrailingTail();
         }
@@ -56,8 +55,7 @@ namespace SnakeGame
                 { 
                     Console.ReadKey(true);
                 }
-                Console.SetCursorPosition(Position.X, Position.Y);
-                DrawChar(CalculateCornerChar());
+                DrawChar(Position, CalculateCornerChar());
             }
             Position += _direction;
             int levelWidth = LevelManager.LevelBounds.TopLeft.X + LevelManager.LevelBounds.Width;
@@ -73,11 +71,11 @@ namespace SnakeGame
             else if(Position.Y <= LevelManager.LevelBounds.TopLeft.Y)
                 Position = new Point(Position.X, levelHeight - 2);
 
-            Console.SetCursorPosition(Position.X, Position.Y);
-            DrawChar(CalculateNormalChar());
+            DrawChar(Position, CalculateNormalChar());
         }
-        private void DrawChar(char ch)
+        private void DrawChar(Point pos, char ch)
         {
+            Console.SetCursorPosition(pos.X, pos.Y);
             Console.Write(ch);
         }
         private void ClearTrailingTail()

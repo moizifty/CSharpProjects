@@ -5,13 +5,12 @@ namespace SnakeGame
     static class LevelManager
     {
         public const int MAX_FOOD_AMOUNT = 10;
-        public static List<Food> FoodList {get; private set;}
+        public static List<Food> FoodList {get; private set;} = new List<Food>(MAX_FOOD_AMOUNT);
         public static Rect LevelBounds {get; private set;}
 
         public static void GenerateLevel(Rect levelBounds)
         {
             LevelBounds = levelBounds;
-            FoodList = new List<Food>(MAX_FOOD_AMOUNT);
             for(int i = 0; i < MAX_FOOD_AMOUNT; i++)
             {
                 FoodList.Add(GenerateFood());
