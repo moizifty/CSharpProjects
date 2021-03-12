@@ -15,12 +15,16 @@ namespace SnakeGame
             Snake snake = new Snake(levelCenter, 3);
             LevelManager.DrawLevelBoundary();
 
-            Console.CursorVisible = false;
+            //Console.CursorVisible = false;
             while(true)
             {
                 foreach(Food f in LevelManager.FoodList)
                 {
-                    f.UpdateDrawable();
+                    if(f.ReadyToUpdate)
+                    {
+                        f.UpdateDrawable();
+                        f.ReadyToUpdate = false;
+                    }
                 }
                 snake.UpdateDrawable();
                 System.Threading.Thread.Sleep(80);

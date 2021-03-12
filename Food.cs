@@ -5,6 +5,9 @@ namespace SnakeGame
     class Food : IDrawable
     {
         public Point Position {get; set;}
+        public bool IsStatic {get; set;} = true;
+        public bool ReadyToUpdate {get; set;} = true;
+
         private char _displayChar = 'o'; 
         public Food(Point pos) => Position = pos;
 
@@ -17,6 +20,7 @@ namespace SnakeGame
         public void Consume()
         {
             Position = LevelManager.GetRandomPoint();
+            ReadyToUpdate = true;
         }
     }
 }

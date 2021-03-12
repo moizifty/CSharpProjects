@@ -21,6 +21,8 @@ namespace SnakeGame
 
         public Point Position {get; set;} = Point.zero;
         public int Length {get; set;} = 0;
+        public bool IsStatic { get; set;} = false;
+        public bool ReadyToUpdate { get; set;} = false;
 
         public Snake() {tailPoints = new List<Point>();}
 
