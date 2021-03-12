@@ -12,15 +12,15 @@ namespace SnakeGame
             Point levelCenter = (levelBounds.TopLeft + new Point(levelBounds.Width, levelBounds.Height)) * 0.5f;
 
             LevelManager.GenerateLevel(levelBounds);
-            Snake snake = new Snake(levelCenter, 3);
+            Snake snake = new Snake(levelCenter, 1);
             LevelManager.DrawLevelBoundary();
 
-            //Console.CursorVisible = false;
+            Console.CursorVisible = false;
             while(true)
             {
                 foreach(Food f in LevelManager.FoodList)
                 {
-                    if(f.ReadyToUpdate)
+                    if((f.ReadyToUpdate && f.IsStatic) || !f.IsStatic)
                     {
                         f.UpdateDrawable();
                         f.ReadyToUpdate = false;
